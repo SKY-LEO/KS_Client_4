@@ -19,13 +19,13 @@ menu = "Для просмотра всех векторов напишите \"v
 
 def client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('localhost', 7000))  # Подключаемся к нашему серверу.
+    client_socket.connect(('localhost', 6000))
     print("Создано соединение между клиентом и сервером")
     help_dialog()
+
     while True:
         client_command = input("Введите сообщение: ")
         if client_command == "-1":
-            print("Получен запрос на уничтожение связи")
             break
         elif client_command == "help":
             help_dialog()
@@ -38,7 +38,8 @@ def client():
 
 
 def help_dialog():
-    print(menu)
+    print("\033[36m{}".format(menu))
+    print("\033[0m")
 
 
 if __name__ == '__main__':
