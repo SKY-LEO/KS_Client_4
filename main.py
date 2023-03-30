@@ -1,27 +1,44 @@
 import pickle
 import socket
 
+menu = "Для просмотра всех векторов напишите \"view\"\n" \
+       + "Чтобы добавить вектор напишите \"add число число\"\n" \
+       + "Чтобы изменить вектор напишите \"edit номер_вектора новое_значение\"\n" \
+       + "Чтобы удалить товар напишите \"delete номер_вектора\"\n" \
+       + "Чтобы умножить векторы на скаляр напишите \"* коэффициент\"\n" \
+       + "Чтобы поделить векторы на скаляр напишите \"/ коэффициент\"\n" \
+       + "Чтобы просмотреть минимальные элементы векторов напишите \"min\"\n" \
+       + "Чтобы просмотреть максимальные элементы векторов напишите \"max\"\n" \
+       + "Чтобы отсортировать элементы векторов по возрастанию напишите \"asc\"\n" \
+       + "Чтобы отсортировать элементы векторов по убыванию напишите \"desc\"\n" \
+       + "Чтобы сложить вектор_1 с вектор_2 напишите \"sum вектор_1 вектор_2\"\n" \
+       + "Чтобы отнять от вектор_1 вектор_2 напишите \"dif вектор_1 вектор_2\"\n" \
+       + "Чтобы просмотреть список команд напишите \"help\"\n" \
+       + "Чтобы завершить работу напишите \"-1\"\n"
+
 
 def client():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('localhost', 7000))  # Подключаемся к нашему серверу.
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect(('localhost', 7000))  # Подключаемся к нашему серверу.
     print("Создано соединение между клиентом и сервером")
-
+    help_dialog()
     while True:
-        client_command = input()
-        #s.sendall(client_command.encode('utf-8'))
-        s.sendall(pickle.dumps(client_command))
+        client_command = input("Введите сообщение: ")
         if client_command == "-1":
             print("Получен запрос на уничтожение связи")
             break
-        #input_string = s.recv(1024).decode('utf-8')
-        obj = pickle.loads(s.recv(10000))
-        print('Obj:', obj)
-        #if input_string:
-        #    print("Получены данные: ")
-        #    print(input_string)
-    s.close()
+        elif client_command == "help":
+            help_dialog()
+        else:
+            client_socket.sendall(pickle.dumps(client_command))
+            input_string = pickle.loads(client_socket.recv(4096))
+            print("Получены данные:", input_string, "\n")
+    client_socket.close()
     print("Связь уничтожена")
+
+
+def help_dialog():
+    print(menu)
 
 
 if __name__ == '__main__':
